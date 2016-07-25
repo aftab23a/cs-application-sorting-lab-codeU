@@ -9,6 +9,7 @@ import java.util.Comparator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.PriorityQueue;
+import java.util.Collections;
 
 /**
  * Provides sorting algorithms.
@@ -63,8 +64,19 @@ public class ListSorter<T> {
 	 * @return
 	 */
 	public List<T> mergeSort(List<T> list, Comparator<T> comparator) {
-        // FILL THIS IN!
-        return null;
+		if(list.size() <= 1) return list; 
+
+		int start = 0; 
+		int mid = list.size()/2; 
+		int end = list.size(); 
+		// split in half 
+		List<T> first = mergeSort(new LinkedList<T>(list.subList(start, mid)), comparator); 
+		List<T> second = mergeSort(new LinkedList<T>(list.subList(mid, end)), comparator); 
+
+		List<T> merged = new ArrayList<T>(first);
+		merged.addAll(second); 
+		Collections.sort(merged, comparator); 
+		return merged; 
 	}
 
 	/**
@@ -76,6 +88,13 @@ public class ListSorter<T> {
 	 */
 	public void heapSort(List<T> list, Comparator<T> comparator) {
         // FILL THIS IN!
+        PriorityQueue<T> q = new PriorityQueue<T>(list.size(), comparator); 
+        q.addAll(list); 
+        list.clear(); 
+
+        while(!q.isEmpty()) {
+        	list.add(q.poll()); 
+        }
 	}
 
 	
@@ -89,8 +108,25 @@ public class ListSorter<T> {
 	 * @return
 	 */
 	public List<T> topK(int k, List<T> list, Comparator<T> comparator) {
-        // FILL THIS IN!
-        return null;
+        PriorityQueue<T> pq = new PriorityQueue<T>(list.size(), comparator); 
+
+        for(T item: list) {
+        	if(pq.size() < k) {
+        		pq.offer(item);
+        		continue; 
+        	}
+
+        	if(comparator.compare(item, pq.peek()) > 0) {
+        		pq.poll(); 
+        		pq.offer(item); 
+        	}
+        }
+
+        List<T> topK = new ArrayList<>(); 
+        while(!pq.isEmpty()) {
+        	topK.add(pq.poll());
+        }
+        return topK; 
 	}
 
 	
